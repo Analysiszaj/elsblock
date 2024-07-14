@@ -3,19 +3,33 @@ EXE = demo
 IMGUI_DIR = lib/imgui
 GLAD_DIR = lib/glad
 OUTPUT_DIR = build
+COMMON_DIR = src/common
+DEMO_DIR = src/demos
 
-SOURCES = main.cpp
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
-SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
-SOURCES += $(GLAD_DIR)/src/glad.c
+CPP_SOURCES = main.cpp
+CPP_SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+CPP_SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 
-OBJS = $(addprefix $(OUTPUT_DIR)/, $(notdir $(SOURCES:.cpp=.o)))
+# demo
+CPP_SOURCES += $(wildcard $(DEMO_DIR)/*.cpp)
+
+# common
+CPP_SOURCES += $(wildcard $(COMMON_DIR)/*.cpp)
+
+C_SOURCES = $(GLAD_DIR)/src/glad.c
+
+CPP_OBJS := $(addprefix $(OUTPUT_DIR)/, $(notdir $(CPP_SOURCES:.cpp=.o)))
+C_OBJS := $(addprefix $(OUTPUT_DIR)/, $(notdir $(C_SOURCES:.c=.o)))
+OBJS := $(C_OBJS) $(CPP_OBJS)
+
+$(info OBJS)
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -std=c++17 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends \
 -Ilib/glad/include \
--I$(COMMON_DIR)
+-I$(COMMON_DIR) \
+-I$(DEMO_DIR)
 CXXFLAGS += -g -Wall -Wformat
 
 ##---------------------------------------------------------------------
@@ -80,9 +94,17 @@ $(OUTPUT_DIR)/%.o: $(IMGUI_DIR)/%.cpp | $(OUTPUT_DIR)
 $(OUTPUT_DIR)/%.o: $(IMGUI_DIR)/backends/%.cpp | $(OUTPUT_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(OUTPUT_DIR)/%.o: $(GLAD_DIR)/glad/src/%.cpp | $(OUTPUT_DIR)
+$(OUTPUT_DIR)/%.o: $(GLAD_DIR)/src/%.c | $(OUTPUT_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
+$(OUTPUT_DIR)/%.o: $(COMMON_DIR)/%.cpp | $(OUTPUT_DIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OUTPUT_DIR)/%.o: $(DEMO_DIR)/%.cpp | $(OUTPUT_DIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OUTPUT_DIR):
+	mkdir $@	
 
 clean:
 	rm -f $(EXE) $(OBJS)

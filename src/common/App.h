@@ -14,13 +14,13 @@ class App
 public:
     App(std::string title, int w, int h, int argc, char const *argv[]);
     virtual ~App();
-    virtual void Start();
+    virtual void Start() {};
     virtual void Update();
     void Run();
     ImVec2 GetWindowSize() const;
 
-    ImVec4 ClearColor();
+    ImVec4 ClearColor;
     GLFWwindow *Window;
-    bool UsingDGPU;
+    bool UsingGPU;
 };
 #endif
