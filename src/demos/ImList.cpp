@@ -15,7 +15,7 @@ namespace ImList
         float text_scale)
     {
         ImGui::BeginChild(name, size);
-
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
         ListDrawRectangleFill(ImVec2(), size, ColorBrightnesScale(color, 0.65f));
         ImGui::SetWindowFontScale(text_scale);
 
@@ -35,7 +35,7 @@ namespace ImList
             ImGui::Text(items[i].c_str());
             if (ImGui::IsItemHovered())
             {
-                menu_buffer_item_scroll.x = DrawHeightPosition - ImGui::GetScrollY();
+                menu_buffer_type_scroll.x = DrawHeightPosition - ImGui::GetScrollY();
                 menu_buffer_width_type.x = ItemTextSize.x + IMGUI_ITEM_SPAC * 2.0f;
 
                 if (ImGui::GetMouseClickedCount(0))
@@ -51,8 +51,9 @@ namespace ImList
             }
             TextDrawHeight = ItemTextSize.y;
         }
-        MenuInterCalc(menu_buffer_item_scroll, menu_buffer_width_type, speed);
+        MenuInterCalc(menu_buffer_type_scroll, menu_buffer_width_type, speed);
         MenuInterCalc(menu_buffer_item_scroll, menu_buffer_width_item, speed);
+        ImGui::PopStyleColor();
         ImGui::EndChild();
 
         return ReturnTypeFlag;

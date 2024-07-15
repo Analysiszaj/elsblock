@@ -16,9 +16,9 @@ void App::Update()
 
     static ImList::SmoothMenuWindow smoothMenu;
     static uint32_t count = 2;
-    ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size);
+    ImGui::SetNextWindowSize(ImVec2(256.0f, 386.0f));
     ImGui::Begin("main", nullptr, 0);
-    smoothMenu.DrawMenuWindow("SmoothMenu", MenuListItem, count, HEX_TO_RGBA("#ffffff", 1.0f), ImVec2(256.0f, 386.0f), 0.01f);
+    smoothMenu.DrawMenuWindow("SmoothMenu", MenuListItem, count, HEX_TO_RGBA("#D8801B", 1.0f), ImVec2(-1, -1), 1.0f);
     ImGui::End();
 
     ImGui::SetNextWindowPos(ImGui::GetCursorScreenPos());
